@@ -10,6 +10,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/auth_provider.dart';
 import '../models/modalidade_model.dart';
 import '../widgets/glass_container.dart'; // [IMPORT]
+import '../core/utils/data_seeder.dart'; // [NOVO] Import para restaurar grade
 
 class ScheduleView extends ConsumerStatefulWidget {
   final List<String>? filterModalities;
@@ -191,6 +192,37 @@ class _ScheduleViewState extends ConsumerState<ScheduleView> {
                   onPressed: () => setState(() => _selectedModalityId = null),
                   child: const Text('LIMPAR FILTROS', style: TextStyle(color: AppTheme.accentGold)),
                 ),
+                if (isAdmin) ...[
+                  const SizedBox(height: 24),
+                  ElevatedButton.icon(
+                    onPressed: () async {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Restaurando Grade Padrão...')),
+                      );
+                      try {
+                        await DataSeeder.seedOfficialSchedule();
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Grade restaurada com sucesso!'), backgroundColor: Colors.green),
+                          );
+                        }
+                      } catch (e) {
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Erro ao restaurar: $e'), backgroundColor: Colors.red),
+                          );
+                        }
+                      }
+                    },
+                    icon: const Icon(LucideIcons.refreshCw, size: 18),
+                    label: const Text('RESTAURAR GRADE PADRÃO'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppTheme.accentGold.withValues(alpha: 0.1),
+                      foregroundColor: AppTheme.accentGold,
+                      side: const BorderSide(color: AppTheme.accentGold),
+                    ),
+                  ),
+                ],
               ],
             ),
           );
