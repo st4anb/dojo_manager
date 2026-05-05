@@ -1,0 +1,8 @@
+{
+  "projects": {
+    "default": "dojo-manager-2bf1a",
+    "firebase firestore:delete --all-collections": "dojo-manager-2bf1a"
+  },
+  "targets": {},
+  "etags": {}
+}

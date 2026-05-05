@@ -1,0 +1,10 @@
+{
+  "name": "dojo-manager-backend",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "mercadopago": "^2.0.8",
+    "firebase-admin": "^11.8.0",
+    "uuid": "^9.0.1"
+  }
+}

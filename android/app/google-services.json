@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1069283303095",
+    "project_id": "dojo-manager-2bf1a",
+    "storage_bucket": "dojo-manager-2bf1a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1069283303095:android:66327a69b11a59affab732",
+        "android_client_info": {
+          "package_name": "com.example.dojo_manager"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCvuf13PvYzeL47znMxS_7J82UcxhztNa4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
