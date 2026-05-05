@@ -145,3 +145,20 @@ erDiagram
         string grau
     }
 ```
+
+---
+
+## 📸 Vitrine Visual Multiplataforma
+
+O Dojo Manager foi desenhado com uma estética **Dark Premium** (Glassmorphism e Neumorphism) focada em alta performance e responsividade. Abaixo, apresentamos o mapeamento das telas e suas respectivas funções e proteções de segurança.
+
+| Funcionalidade | Visão Web (Desktop) | Visão Mobile (PWA) |
+| :--- | :---: | :---: |
+| **Login Seguro** <br><br> Autenticação via `Firebase Auth`. Acesso protegido, onde o token JWT determina a visualização (Admin ou Aluno). | <img src="docs/screenshots/09_login_web.png" width="450"> | <img src="docs/screenshots/01_login_mobile.png" width="180"> |
+| **Dashboard Administrativo** <br><br> Visão geral do negócio. Dados cacheados. Proteção via *Firestore Rules* (`role == 'admin'`). | <img src="docs/screenshots/10_dashboard_web.png" width="450"> | <img src="docs/screenshots/02_dashboard_mobile.png" width="180"> |
+| **Grade de Horários** <br><br> Exibição dinâmica das modalidades. O Botão *Restaurar Grade* executa uma rotina backend (`DataSeeder`) para injetar os horários padrões sem corromper dados de alunos. | <img src="docs/screenshots/18_schedule_web.png" width="450"> | <img src="docs/screenshots/04_schedule_mobile.png" width="180"> |
+| **Dossiê do Aluno (360)** <br><br> Proteção LGPD estrita. O CPF e dados de saúde (*Anamnese*) são visíveis apenas para o próprio aluno ou administradores. Os formulários utilizam mascaramento de dados no frontend. | <img src="docs/screenshots/15_student_dossier_web.png" width="450"> | <img src="docs/screenshots/03_students_mobile.png" width="180"> |
+| **Portal do Aluno (Self-Service)** <br><br> Permite que o usuário consulte seu histórico, frequências e graduações ativas. Prevenção ativa contra IDOR (Referência Direta Insegura). | <img src="docs/screenshots/24_student_home_web.png" width="450"> | <img src="docs/screenshots/25_student_schedule_web.png" width="180"> |
+| **Gestão Financeira & Loja** <br><br> Relatórios financeiros mensais e loja virtual. Integração segura via Webhooks (Mercado Pago), sem armazenar dados de cartão de crédito no banco. | <img src="docs/screenshots/11_financial_web.png" width="450"> | <img src="docs/screenshots/07_store_mobile.png" width="180"> |
+
+> *Nota: Todas as rotas de gravação e exclusão (botões de edição, exclusão e pagamentos) possuem validação dupla: no cliente (Flutter) e no servidor (Firestore Rules).*
