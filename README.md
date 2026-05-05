@@ -48,6 +48,100 @@ Para configurar o ambiente de desenvolvimento local e rodar o Dojo Manager:
 
 ---
 
-## 🗺️ Metodologia e Fluxogramas
+### 🏗️ Arquitetura do Sistema (High-Level)
+O Dojo Manager utiliza uma arquitetura baseada em nuvem, integrando o frontend Flutter com os serviços do Firebase e gateways de pagamento externos.
 
-*(Este espaço está reservado para a documentação visual, diagramas arquiteturais e mapas de processos do dojo, que serão adicionados futuramente para ilustrar os fluxos de estado e regras de negócio da aplicação).*
+```mermaid
+graph TD
+    User((Usuário / Aluno)) --> PWA[Flutter PWA / Mobile]
+    Admin((Administrador)) --> PWA
+    
+    subgraph "Google Cloud / Firebase"
+        PWA --> Auth[Firebase Auth]
+        PWA --> Firestore[(Cloud Firestore)]
+        PWA --> Storage[Firebase Storage]
+    end
+    
+    subgraph "Integrações Externas"
+        PWA --> MP[Mercado Pago API]
+        Firestore -.-> Webhooks[Backend / Webhooks]
+        Webhooks --> MP
+    end
+
+    style PWA fill:#02569B,stroke:#fff,stroke-width:2px,color:#fff
+    style Firestore fill:#FFCA28,stroke:#000,stroke-width:1px
+    style Auth fill:#FFCA28,stroke:#000,stroke-width:1px
+    style Storage fill:#FFCA28,stroke:#000,stroke-width:1px
+```
+
+### 🔐 Fluxo de Autenticação e Segurança (Foco LGPD)
+O acesso aos dados é protegido por camadas de autenticação JWT e Regras de Segurança no nível do banco de dados (Firestore Security Rules), garantindo que apenas o dono do dado ou administradores autorizados possam visualizar informações sensíveis.
+
+```mermaid
+sequenceDiagram
+    participant U as Usuário
+    participant P as PWA (Frontend)
+    participant A as Firebase Auth
+    participant F as Firestore (Security Rules)
+    participant D as Dados Sensíveis (PII)
+
+    U->>P: Login (E-mail/Senha)
+    P->>A: Autenticar
+    A-->>P: Retorna JWT (uid)
+    
+    U->>P: Solicita Dossiê 360
+    P->>F: Query /ALUNOS/{uid}
+    
+    Note over F: Validação: request.auth.uid == resource.data.uid
+    
+    alt Autorizado
+        F-->>P: Retorna PII (CPF, Endereço, Saúde)
+        P-->>U: Exibe Dados Protegidos
+    else Não Autorizado (IDOR Prevention)
+        F-->>P: Erro 403 (Permission Denied)
+        P-->>U: Alerta de Segurança
+    end
+```
+
+### 📊 Estrutura do Banco de Dados (Entidades)
+Relacionamento entre as principais coleções do Firestore, centradas na entidade do Aluno.
+
+```mermaid
+erDiagram
+    ALUNOS ||--o{ PAGAMENTOS : "possui"
+    ALUNOS ||--o{ FREQUENCIA : "registra"
+    ALUNOS ||--o{ GRADUACOES : "conquista"
+    ALUNOS ||--o| SAUDE_ANAMNESE : "preenche"
+    ALUNOS ||--o{ MATRICULAS : "vincula"
+    
+    ALUNOS {
+        string uid PK
+        string nome
+        string faixa_atual
+        map dados_pessoais
+        string foto_url
+    }
+    
+    PAGAMENTOS {
+        string id PK
+        string aluno_id FK
+        timestamp data_vencimento
+        float valor
+        string status
+    }
+    
+    FREQUENCIA {
+        string id PK
+        string aluno_id FK
+        timestamp data_treino
+        string modalidade
+    }
+    
+    GRADUACOES {
+        string id PK
+        string aluno_id FK
+        string modalidade
+        string faixa
+        string grau
+    }
+```
